@@ -1,0 +1,58 @@
+#! /bin/sh
+
+# Setting up sxhkd
+pgrep -x sxhkd > /dev/null || sxhkd &
+
+# Setting up monitors
+bspc monitor -d 1 2 3 4 5 6 7 8 9 10
+
+# Border width stuff
+bspc config border_width         2
+bspc config window_gap           2
+
+# setting other stuff?
+bspc config split_ratio          0.60 # Originally 0.52 for normal 16:9 aspect ratio
+bspc config borderless_monocle   true
+bspc config gapless_monocle      true
+
+# Color stuff
+bspc config focused_border_color '#a35701'
+
+# Rules
+bspc rule -a Emacs state=tiled
+bspc rule -a dosbox state=tiled
+bspc rule -a Origin state=floating
+
+#Mouse keybindings
+#   Set mouse 1 to move floating windows
+bspc config pointer_action1 move
+
+#   Mouse 2 button resizes the window by side
+bspc config pointer_action2 resize_side
+
+#   Mouse 3 button (right mouse) resize by corner
+bspc config pointer_action2 resize_corner
+
+#
+# Autostart programs
+#
+
+# Background
+nitrogen --restore
+# Polybar setup
+killall -q polybar
+polybar example &
+# Notifications
+killall -q dunst
+dunst &
+
+# Fixing drawing tablet rotation, mainly an issue with my system.
+# Info for this is from https://wiki.ubuntu.com/X/InputCoordinateTransformation
+xinput set-prop "UGTABLET 4 inch PenTablet Pen (0)" --type=float "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1
+# Fixing pycharm by changing the wm name
+wmname LG3D
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+# Play funny sound
+mpv --no-video ~/.config/bspwm/Startup.wav
+
